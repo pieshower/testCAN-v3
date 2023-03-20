@@ -4,14 +4,17 @@
 
 
 
-FlexCAN_T4 <CAN2, RX_SIZE_256, TX_SIZE_16> Inverter_CAN_;
+FlexCAN_T4 <CAN1, RX_SIZE_256, TX_SIZE_16> Inverter_CAN_;
+
+// CAN_message_t tx_msg;
+// CAN_message_t rx_msg;
 
 
 void init_can()
 {
     // inverter can must send & receive, 6rx MB and 2tx MB
     Inverter_CAN_.begin();
-    Inverter_CAN_.setBaudRate(100000);
+    Inverter_CAN_.setBaudRate(1000000);
     Inverter_CAN_.setMaxMB(NUM_TX_MAILBOXES + NUM_RX_MAILBOXES);
 
     for (int i = 0; i < NUM_RX_MAILBOXES; i++)
@@ -28,38 +31,48 @@ void init_can()
 
     }
 
-    Inverter_CAN_.mailboxStatus();
+    // Inverter_CAN_.mailboxStatus();
 
 }
 
 
-int ReadCAN(CAN_message_t &msg)
+void ReadCAN(CAN_message_t msg)
 {
 
-    return Inverter_CAN_.read(msg);
+    // msg = rx_msg;
+
+    Inverter_CAN_.read(msg);
 
 }
 
 
-int WriteCAN(CAN_message_t &msg)
+void WriteCAN(CAN_message_t msg)
 {
+
+    // msg = tx_msg;
 
     Inverter_CAN_.write(msg);
-    return Inverter_CAN_.write(msg);
 
 }
 
 
-// int load_can(uint32_t id, bool extended, uint8_t buf[])
-// {
+void load_can(uint32_t id, bool extended, uint8_t buf[])
+{
 
-//     CAN_message_t tx_msg;
+    CAN_message_t tx_msg;
 
-//     tx_msg.id = id;
-//     tx_msg.flags.extended = extended;
+    tx_msg.id = id;
+    tx_msg.flags.extended = extended;
 
-//     memcpy(&tx_msg.buf[0], &buf, 8);
+    //memcpy(&tx_msg.buf[0], &buf, 8);
 
-//     return WriteCAN(tx_msg);
+    for (uint8_t i = 0; i < sizeof((int)buf); i++)
+    {
 
-// }
+        tx_msg.buf[i] = buf[i];
+
+    }
+
+    WriteCAN(tx_msg);
+
+}

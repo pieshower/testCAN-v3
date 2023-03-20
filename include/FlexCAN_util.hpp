@@ -41,9 +41,10 @@
 
 
 // Global wrapper
-int WriteCAN(CAN_message_t &msg);
-int ReadCAN(CAN_message_t &msg);
+void WriteCAN(CAN_message_t msg);
+void ReadCAN(CAN_message_t msg);
 // int load_can(uint32_t id, bool extended, uint8_t buf[]);
 void init_can();
+void load_can(uint32_t id, bool extended, uint8_t buf[]);
 
 #endif
